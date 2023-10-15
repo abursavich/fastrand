@@ -119,13 +119,13 @@ func Uint64n(n uint64) uint64 {
 	return v % n
 }
 
-// A Number is a non-complex number.
-type Number interface {
+// A Real is a real number.
+type Real interface {
 	constraints.Signed | constraints.Unsigned
 }
 
 // Jitter returns a pseudo-random value in the interval [v - factor*v, v + factor*v].
-func Jitter[T Number](v T, factor float64) T {
+func Jitter[T Real](v T, factor float64) T {
 	r := Float64()
 	// r = [0, 1)
 	// 2*r = [0, 2)
