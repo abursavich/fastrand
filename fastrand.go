@@ -10,6 +10,8 @@ package fastrand
 
 import (
 	"io"
+
+	"golang.org/x/exp/constraints"
 )
 
 const (
@@ -115,6 +117,23 @@ func Uint64n(n uint64) uint64 {
 		v = u64()
 	}
 	return v % n
+}
+
+// A Number is a non-complex number.
+type Number interface {
+	constraints.Signed | constraints.Unsigned
+}
+
+// Jitter returns a pseudo-random value in the interval [v - factor*v, v + factor*v].
+func Jitter[T Number](v T, factor float64) T {
+	r := Float64()
+	// r = [0, 1)
+	// 2*r = [0, 2)
+	// 2*r - 1 = [-1, 1)
+	// j*(2*r - 1) = [-j, j)
+	// 1 + j*(2*r - 1) = [1 - j, 1 + j)
+	// b*(1 + j*(2*r - 1)) = [b - j*b, b + j*b)
+	return T(float64(v) * (1 + (factor * (2*r - 1))))
 }
 
 // Shuffle pseudo-randomizes the order of elements in s.
